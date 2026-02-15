@@ -7,7 +7,7 @@ import MapView from "@/components/map/MapView";
 import { useClerkAuthContext } from "@/contexts/ClerkAuthContext";
 import { useAuth } from "@clerk/clerk-react";
 import { supabase } from "@/integrations/supabase/client";
-import { formatINR, convertToINR } from "@/lib/utils";
+import { formatDirectINR, convertToINR } from "@/lib/utils";
 import { toast } from "sonner";
 import { Phone, MessageSquare, ChevronLeft, Clock, CheckCircle2, Truck, Wrench, XCircle, Radio, Play } from "lucide-react";
 import EmergencyContact from "@/components/emergency/EmergencyContact";
@@ -37,6 +37,8 @@ interface MechanicProfile {
   full_name?: string;
   rating?: number;
   total_reviews?: number;
+  business_lat?: number;
+  business_lng?: number;
 }
 
 const statusSteps = [
@@ -248,7 +250,7 @@ const RequestTracking = () => {
         // Use secure API if token available, otherwise fall back to direct query
         if (token) {
           const response = await fetch(
-            `${SUPABASE_URL}/functions/v1/secure-profile?id=${request.mechanic_id}`,
+            `${SUPABASE_URL}/functions/v1/secure-mechanic-data`,
             {
               method: 'GET',
               headers: {
@@ -264,30 +266,41 @@ const RequestTracking = () => {
               setMechanicProfile({
                 id: result.data.id || request.mechanic_id,
                 full_name: result.data.full_name,
-                business_name: result.data.full_name,
+                business_name: result.data.business_name,
+                business_lat: result.data.business_lat,
+                business_lng: result.data.business_lng,
               });
               return;
             }
           }
         }
 
-        // Fallback: query profiles table directly using regular Supabase client
-        const { data, error } = await supabase
+        // Fallback: query profiles and mechanic_details tables directly using regular Supabase client
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('id, full_name')
           .eq('user_id', request.mechanic_id)
           .single();
 
-        if (error) {
-          console.error('Error fetching mechanic profile:', error);
+        if (profileError) {
+          console.error('Error fetching mechanic profile:', profileError);
           return;
         }
 
-        if (data) {
+        // Also fetch mechanic_details for business location
+        const { data: mechanicDetails, error: detailsError } = await supabase
+          .from('mechanic_details')
+          .select('business_name, business_lat, business_lng')
+          .eq('user_id', request.mechanic_id)
+          .single();
+
+        if (profile) {
           setMechanicProfile({
-            id: data.id || request.mechanic_id,
-            full_name: data.full_name,
-            business_name: data.full_name,
+            id: profile.id || request.mechanic_id,
+            full_name: profile.full_name,
+            business_name: mechanicDetails?.business_name,
+            business_lat: mechanicDetails?.business_lat,
+            business_lng: mechanicDetails?.business_lng,
           });
         }
       } catch (error) {
@@ -374,7 +387,7 @@ const RequestTracking = () => {
     id: string;
     lat: number;
     lng: number;
-    type: "user" | "mechanic";
+    type: "user" | "mechanic" | "shop";
     label?: string;
   }> = [
     { id: "user", lat: customerLat, lng: customerLng, type: "user" },
@@ -387,6 +400,17 @@ const RequestTracking = () => {
       lng: effectiveLocation.lng,
       type: "mechanic",
       label: demoMode ? "Demo mechanic" : "Your mechanic",
+    });
+  }
+
+  // Add mechanic shop location if available
+  if (mechanicProfile?.business_lat && mechanicProfile?.business_lng) {
+    markers.push({
+      id: "shop",
+      lat: mechanicProfile.business_lat,
+      lng: mechanicProfile.business_lng,
+      type: "shop",
+      label: mechanicProfile.business_name || "Shop",
     });
   }
 
@@ -557,7 +581,7 @@ const RequestTracking = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Estimated cost</span>
-                <span className="font-medium">{formatINR(request.estimated_cost)}</span>
+                <span className="font-medium">{formatDirectINR(request.estimated_cost)}</span>
               </div>
             </div>
 

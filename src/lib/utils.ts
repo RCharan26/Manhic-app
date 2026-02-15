@@ -18,3 +18,10 @@ export function formatINR(amount: number | string | null | undefined): string {
   const inrAmount = convertToINR(amount);
   return `₹${inrAmount.toLocaleString("en-IN")}`;
 }
+
+export function formatDirectINR(amount: number | string | null | undefined): string {
+  if (!amount) return "₹0";
+  const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
+  const finalAmount = isNaN(numAmount) ? 0 : Math.round(numAmount);
+  return `₹${finalAmount.toLocaleString("en-IN")}`;
+}

@@ -9,7 +9,7 @@ import { useClerkAuthContext } from "@/contexts/ClerkAuthContext";
 import { useAuth } from "@clerk/clerk-react";
 import { useMechanicJobLocation } from "@/hooks/useMechanicJobLocation";
 import { supabase } from "@/integrations/supabase/client";
-import { formatINR, convertToINR } from "@/lib/utils";
+import { formatDirectINR, convertToINR } from "@/lib/utils";
 import { toast } from "sonner";
 import { 
   Phone, MessageSquare, MapPin, Clock, CheckCircle2, 
@@ -475,7 +475,7 @@ const JobManagement = () => {
                 </div>
               </div>
               <span className="text-xl font-bold text-primary">
-                {formatINR(request.estimated_cost)}
+                {formatDirectINR(request.estimated_cost)}
               </span>
             </div>
           </div>
@@ -573,43 +573,100 @@ const JobManagement = () => {
           <div className="flex-1" />
 
           {/* Action buttons */}
-          <div className="px-4 py-6 space-y-3 safe-area-inset bg-background">
+          <div className="px-0 py-0 space-y-0 safe-area-inset bg-background border-t border-border">
             {request.status === "pending" ? (
-              <div className="p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
-                <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                  Accept or decline request to proceed.
-                </p>
+              <div className="px-4 py-6 space-y-3">
+                {!showDeclineConfirm ? (
+                  <>
+                    <div className="p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
+                      <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                        Accept or decline request to proceed.
+                      </p>
+                    </div>
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        className="flex-1 h-12 rounded-xl font-semibold"
+                        onClick={() => setShowDeclineConfirm(true)}
+                        disabled={actionLoading}
+                      >
+                        <XCircle className="w-5 h-5 mr-2" />
+                        Decline
+                      </Button>
+                      <Button
+                        className="flex-1 h-12 bg-green-600 hover:bg-green-700 rounded-xl font-semibold text-white"
+                        onClick={() => updateStatus("accepted")}
+                        disabled={actionLoading}
+                      >
+                        {actionLoading ? (
+                          <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                        ) : (
+                          <CheckCircle2 className="w-5 h-5 mr-2" />
+                        )}
+                        Accept
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
+                    <p className="text-sm text-red-700 dark:text-red-400 font-medium mb-4">
+                      Are you sure you want to decline this request?
+                    </p>
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        className="flex-1 h-11 rounded-xl"
+                        onClick={() => setShowDeclineConfirm(false)}
+                      >
+                        Keep
+                      </Button>
+                      <Button
+                        className="flex-1 h-11 bg-red-600 hover:bg-red-700 rounded-xl font-semibold"
+                        onClick={declineRequest}
+                        disabled={actionLoading}
+                      >
+                        {actionLoading ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : null}
+                        Decline
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : nextStatus ? (
-              <Button
-                className="w-full h-16 text-base bg-red-600 hover:bg-red-700 font-semibold rounded-2xl shadow-md"
-                onClick={() => updateStatus(nextStatus)}
-                disabled={actionLoading}
-              >
-                {actionLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                ) : null}
-                {statusLabels[request.status] || "Next Step"}
-              </Button>
+              <>
+                <Button
+                  className="w-full h-14 text-base bg-red-600 hover:bg-red-700 font-semibold rounded-none shadow-none"
+                  onClick={() => updateStatus(nextStatus)}
+                  disabled={actionLoading}
+                >
+                  {actionLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  ) : null}
+                  {statusLabels[request.status] || "Next Step"}
+                </Button>
+                {request.status === "accepted" && (
+                  <Button
+                    className="w-full h-14 text-base bg-slate-700 hover:bg-slate-800 font-semibold rounded-none shadow-none border-t border-background"
+                    onClick={() => navigate(`/messaging?requestId=${request.id}`)}
+                  >
+                    <MessageSquare className="w-5 h-5 mr-2" />
+                    Message Customer
+                  </Button>
+                )}
+              </>
             ) : !nextStatus ? (
-              <Button
-                variant="outline"
-                className="w-full h-12"
-                onClick={() => navigate("/mechanic-dashboard")}
-              >
-                Back to Dashboard
-              </Button>
+              <div className="px-4 py-6 space-y-3">
+                <Button
+                  variant="outline"
+                  className="w-full h-12"
+                  onClick={() => navigate("/mechanic-dashboard")}
+                >
+                  Back to Dashboard
+                </Button>
+              </div>
             ) : null}
-
-            {request.status === "accepted" && (
-              <Button
-                className="w-full h-14 text-base bg-slate-700 hover:bg-slate-800 font-semibold rounded-2xl shadow-md"
-                onClick={() => navigate(`/messaging?requestId=${request.id}`)}
-              >
-                <MessageSquare className="w-5 h-5 mr-2" />
-                Message Customer
-              </Button>
-            )}
           </div>
         </div>
 
@@ -633,7 +690,7 @@ const JobManagement = () => {
 
               <div className="bg-muted rounded-xl p-4 mb-6">
                 <p className="text-sm text-muted-foreground mb-1">Estimated Cost</p>
-                <p className="text-2xl font-bold">{formatINR(request?.estimated_cost)}</p>
+                <p className="text-2xl font-bold">{formatDirectINR(request?.estimated_cost)}</p>
               </div>
 
               <div className="mb-6">

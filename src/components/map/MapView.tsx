@@ -12,7 +12,7 @@ interface MapViewProps {
     id: string;
     lng: number;
     lat: number;
-    type: "user" | "mechanic" | "customer";
+    type: "user" | "mechanic" | "customer" | "shop";
     isAvailable?: boolean;
     label?: string;
     popup?: string;
@@ -65,6 +65,21 @@ const createCustomerIcon = () => {
     html: `
       <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
         <span class="text-xl">👤</span>
+      </div>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 48],
+    popupAnchor: [0, -48],
+  });
+};
+
+// shop icon with building
+const createShopIcon = () => {
+  return L.divIcon({
+    className: "custom-marker",
+    html: `
+      <div class="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
+        <span class="text-xl">🏪</span>
       </div>
     `,
     iconSize: [48, 48],
@@ -182,6 +197,8 @@ const MapView = ({
           icon = createUserIcon();
         } else if (markerData.type === "customer") {
           icon = createCustomerIcon();
+        } else if (markerData.type === "shop") {
+          icon = createShopIcon();
         } else {
           icon = createMechanicIcon(Boolean(markerData.isAvailable));
         }

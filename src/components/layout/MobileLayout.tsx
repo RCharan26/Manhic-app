@@ -30,18 +30,18 @@ const MobileLayout = forwardRef<HTMLDivElement, MobileLayoutProps>(
         {showHeader && (
           <header className="sticky top-0 z-50 glass border-b border-border/50">
             <div className="flex items-center justify-between h-14 px-4">
-              <div className="flex items-center">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
                 {showBackButton && (
                   <button
                     onClick={onBack}
-                    className="mr-3 p-2 -ml-2 rounded-full hover:bg-muted active:scale-95 transition-all"
+                    className="p-2 -ml-2 rounded-full hover:bg-muted active:scale-95 transition-all flex-shrink-0"
                     aria-label="Go back"
                   >
                     <ChevronLeft className="w-6 h-6 text-foreground" />
                   </button>
                 )}
                 {headerTitle && (
-                  <h1 className="text-lg font-semibold text-foreground">
+                  <h1 className="text-lg font-semibold text-foreground truncate">
                     {headerTitle}
                   </h1>
                 )}

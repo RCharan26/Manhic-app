@@ -6,7 +6,7 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useClerkAuthContext } from "@/contexts/ClerkAuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { formatINR, convertToINR } from "@/lib/utils";
+import { formatDirectINR, convertToINR } from "@/lib/utils";
 import { toast } from "sonner";
 import { CheckCircle, XCircle, Loader2, AlertTriangle, CreditCard, DollarSign, Smartphone } from "lucide-react";
 
@@ -19,8 +19,8 @@ const Payment = () => {
   
   const requestId = location.state?.requestId;
   const mechanicId = location.state?.mechanicId;
-  const estimatedCost = convertToINR(location.state?.estimatedCost || 35);
-  const finalCost = convertToINR(location.state?.finalCost || location.state?.estimatedCost || 35);
+  const estimatedCost = location.state?.estimatedCost || 500;
+  const finalCost = location.state?.finalCost || location.state?.estimatedCost || 500;
   
   const [amount, setAmount] = useState(finalCost.toString());
   const [tip, setTip] = useState(0);
@@ -119,13 +119,13 @@ const Payment = () => {
           {/* Amount summary */}
           <div className="bg-gradient-primary text-primary-foreground rounded-2xl p-6 mb-6">
             <p className="text-sm opacity-90">Service Cost</p>
-            <p className="text-4xl font-bold mt-1">₹{parseFloat(amount).toLocaleString("en-IN")}</p>
+            <p className="text-4xl font-bold mt-1">{formatDirectINR(parseFloat(amount))}</p>
             
             {tip > 0 && (
               <div className="mt-4 pt-4 border-t border-white/20">
                 <div className="flex justify-between text-sm mb-2">
                   <span>Service:</span>
-                  <span>₹{parseFloat(amount).toLocaleString("en-IN")}</span>
+                  <span>{formatDirectINR(parseFloat(amount))}</span>
                 </div>
                 <div className="flex justify-between text-sm mb-2">
                   <span>Tip:</span>
@@ -133,7 +133,7 @@ const Payment = () => {
                 </div>
                 <div className="flex justify-between font-bold">
                   <span>Total:</span>
-                  <span>₹{totalAmount.toLocaleString("en-IN")}</span>
+                  <span>{formatDirectINR(totalAmount)}</span>
                 </div>
               </div>
             )}
@@ -258,7 +258,7 @@ const Payment = () => {
               ) : (
                 <>
                   <CheckCircle className="w-5 h-5 mr-2" />
-                  Pay ₹{totalAmount.toLocaleString("en-IN")}
+                  Pay {formatDirectINR(totalAmount)}
                 </>
               )}
             </Button>

@@ -7,6 +7,7 @@ import MapView from "@/components/map/MapView";
 import { useClerkAuthContext } from "@/contexts/ClerkAuthContext";
 import { useAuth } from "@clerk/clerk-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { formatDirectINR } from "@/lib/utils";
 import { toast } from "sonner";
 import { Battery, CircleDot, Fuel, Key, Truck, Wrench, Camera, MapPin, Loader2, X } from "lucide-react";
 
@@ -51,7 +52,10 @@ const ServiceRequest = () => {
   useEffect(() => {
     if (!userId) {
       navigate("/login");
+      return;
     }
+    // Clear any cached estimated cost on mount
+    sessionStorage.removeItem("estimatedCost");
   }, [userId, navigate]);
 
   const getEstimatedCost = () => {
@@ -340,7 +344,7 @@ const ServiceRequest = () => {
           <div className="flex justify-between items-center mb-4">
             <div>
               <span className="text-sm text-muted-foreground">Estimated cost</span>
-              <p className="text-xl font-bold">{getEstimatedCost()}</p>
+              <p className="text-xl font-bold">{formatDirectINR(getEstimatedCost())}</p>
             </div>
             <div className="text-right">
               <span className="text-sm text-muted-foreground">Est. arrival</span>

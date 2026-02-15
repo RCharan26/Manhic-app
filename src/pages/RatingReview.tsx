@@ -5,7 +5,7 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useClerkAuthContext } from "@/contexts/ClerkAuthContext";
 import { useAuth } from "@clerk/clerk-react";
-import { formatINR, convertToINR } from "@/lib/utils";
+import { formatDirectINR, convertToINR } from "@/lib/utils";
 import { toast } from "sonner";
 import { Star, Check, Loader2 } from "lucide-react";
 
@@ -235,7 +235,7 @@ const RatingReview = () => {
           </div>
           <div className="text-right">
             <p className="font-bold text-lg">
-              {formatINR(serviceDetails?.final_cost || serviceDetails?.estimated_cost)}
+              {formatDirectINR(serviceDetails?.final_cost || serviceDetails?.estimated_cost)}
             </p>
           </div>
         </div>

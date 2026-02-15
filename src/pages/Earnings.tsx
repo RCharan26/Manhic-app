@@ -6,7 +6,7 @@ import BottomNavigation, { NavItem } from "@/components/navigation/BottomNavigat
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import EmptyState from "@/components/empty/EmptyState";
 import { useClerkAuthContext } from "@/contexts/ClerkAuthContext";
-import { formatINR, convertToINR } from "@/lib/utils";
+import { formatDirectINR, convertToINR } from "@/lib/utils";
 import {
   ResponsiveContainer,
   LineChart,
@@ -311,7 +311,7 @@ const Earnings = () => {
           {/* Earnings summary */}
           <section className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl p-6 mb-5" aria-labelledby="earnings-summary">
             <p id="earnings-summary" className="text-sm opacity-80">Total Earnings</p>
-            <p className="text-4xl font-bold">{formatINR(periodData.amount)}</p>
+            <p className="text-4xl font-bold">{formatDirectINR(periodData.amount)}</p>
             <div className="flex items-center gap-2 mt-2">
               <TrendingUp className="w-4 h-4" aria-hidden="true" />
               <span className="text-sm">{periodData.jobs} jobs completed</span>
@@ -326,7 +326,7 @@ const Earnings = () => {
                 <span className="text-sm text-muted-foreground">Avg per job</span>
               </div>
               <p className="text-2xl font-bold">
-                {formatINR(periodData.jobs > 0 ? periodData.amount / periodData.jobs : 0)}
+                {formatDirectINR(periodData.jobs > 0 ? periodData.amount / periodData.jobs : 0)}
               </p>
             </div>
             <div className="bg-card border border-border rounded-xl p-4">
@@ -334,7 +334,7 @@ const Earnings = () => {
                 <Calendar className="w-4 h-4 text-accent" aria-hidden="true" />
                 <span className="text-sm text-muted-foreground">Pending payout</span>
               </div>
-              <p className="text-2xl font-bold">{formatINR(earnings.pending)}</p>
+              <p className="text-2xl font-bold">{formatDirectINR(earnings.pending)}</p>
             </div>
           </div>
 
@@ -346,8 +346,8 @@ const Earnings = () => {
                 <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 4 }}>
                   <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.06} />
                   <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                  <YAxis tickFormatter={(v) => formatINR(Number(v))} />
-                  <Tooltip formatter={(value: any) => formatINR(Number(value))} />
+                  <YAxis tickFormatter={(v) => formatDirectINR(Number(v))} />
+                  <Tooltip formatter={(value: any) => formatDirectINR(Number(value))} />
                   <Line type="monotone" dataKey="amount" stroke="#06b6d4" strokeWidth={2} dot={{ r: 2 }} />
                 </LineChart>
               </ResponsiveContainer>
@@ -370,7 +370,7 @@ const Earnings = () => {
                         </div>
                       </div>
                       <span className="font-semibold text-green-600">
-                        +{formatINR(job.final_cost)}
+                        +{formatDirectINR(job.final_cost)}
                       </span>
                     </article>
                   </li>

@@ -12,7 +12,7 @@ import { useMechanicLocation } from "@/hooks/useMechanicLocation";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useAuth } from "@clerk/clerk-react";
 import { supabase } from "@/integrations/supabase/client";
-import { formatINR, convertToINR } from "@/lib/utils";
+import { formatINR, formatDirectINR, convertToINR } from "@/lib/utils";
 import { toast } from "sonner";
 import { 
   Home, DollarSign, MessageSquare, User, MapPin, Clock, 
@@ -535,7 +535,7 @@ const MechanicDashboard = () => {
             
             <div className="relative z-10">
               <p id="earnings-heading" className="text-sm opacity-90 font-semibold">Today's Earnings</p>
-              <p className="text-4xl font-extrabold mt-2">{formatINR(todayEarnings)}</p>
+              <p className="text-4xl font-extrabold mt-2">{formatDirectINR(todayEarnings)}</p>
               <div className="flex items-center gap-6 mt-5">
                 <div>
                   <p className="text-xs opacity-80 font-medium">Jobs completed</p>
@@ -588,7 +588,7 @@ const MechanicDashboard = () => {
                               </div>
                             </div>
                             <span className="font-bold text-primary text-lg flex-shrink-0">
-                              {formatINR(activeJob.estimated_cost)}
+                              {formatDirectINR(activeJob.estimated_cost)}
                             </span>
                           </div>
                           {activeJob.description && (
@@ -632,7 +632,7 @@ const MechanicDashboard = () => {
                                 <div className="flex justify-between items-start gap-2">
                                   <p className="font-semibold capitalize text-foreground">{request.service_type}</p>
                                   <span className="font-semibold text-primary text-sm flex-shrink-0">
-                                    {formatINR(request.estimated_cost)}
+                                    {formatDirectINR(request.estimated_cost)}
                                   </span>
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-1">~{request.distance?.toFixed(1) || "0"} km away</p>
@@ -695,7 +695,7 @@ const MechanicDashboard = () => {
                                   </div>
                                 </div>
                                 <span className="font-bold text-primary text-lg flex-shrink-0">
-                                  {formatINR(request.estimated_cost)}
+                                  {formatDirectINR(request.estimated_cost)}
                                 </span>
                               </div>
                               {request.description && (
