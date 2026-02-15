@@ -1,0 +1,49 @@
+﻿node : node:internal/process/promises:394
+At line:1 char:1
++ node scripts/capture_playwright.cjs 2>&1 | Out-File -Encoding utf8 sc ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (node:internal/process/promises:39 
+   4:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+browserType.launch: spawn EFTYPE
+Call log:
+[2m  - <launching> C:\Users\panda\AppData\Local\ms-playwright\chromium_headles
+s_shell-1208\chrome-headless-shell-win64\chrome-headless-shell.exe 
+--disable-field-trial-config --disable-background-networking 
+--disable-background-timer-throttling --disable-backgrounding-occluded-windows 
+--disable-back-forward-cache --disable-breakpad 
+--disable-client-side-phishing-detection 
+--disable-component-extensions-with-background-pages 
+--disable-component-update --no-default-browser-check --disable-default-apps 
+--disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessar
+yBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnB
+rowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverla
+y,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevat
+e,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface 
+--allow-pre-commit-input --disable-hang-monitor 
+--disable-ipc-flooding-protection --disable-popup-blocking 
+--disable-prompt-on-repost --disable-renderer-backgrounding 
+--force-color-profile=srgb --metrics-recording-only --no-first-run 
+--password-store=basic --use-mock-keychain --no-service-autorun 
+--export-tagged-pdf --disable-search-engine-choice-screen 
+--unsafely-disable-devtools-self-xss-warnings 
+--edge-skip-compat-layer-relaunch --enable-automation --disable-infobars 
+--disable-search-engine-choice-screen --disable-sync 
+--enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-s
+ettings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,available
+PointerTypes=4 --no-sandbox --user-data-dir=C:\Users\panda\AppData\Local\Temp\p
+laywright_chromiumdev_profile-NIxN2M --remote-debugging-pipe 
+--no-startup-window[22m
+
+    at C:\Users\panda\Downloads\your-app-companion-main\your-app-companion-main
+\scripts\capture_playwright.cjs:4:34
+    at Object.<anonymous> (C:\Users\panda\Downloads\your-app-companion-main\you
+r-app-companion-main\scripts\capture_playwright.cjs:56:3) {
+  name: 'Error'
+}
+
+Node.js v22.19.0

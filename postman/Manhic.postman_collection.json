@@ -1,0 +1,52 @@
+{
+  "info": {
+    "name": "Manhic API",
+    "_postman_id": "manhic-collection",
+    "description": "Postman collection for secure edge functions and migrations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "{{SUPABASE_URL}}/functions/v1" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Create Service Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{baseUrl}}/secure-service-request", "host": ["{{baseUrl}}"], "path": ["secure-service-request"] },
+        "body": { "mode": "raw", "raw": "{\n  \"service_type\": \"battery\",\n  \"customer_lat\": 12.9716,\n  \"customer_lng\": 77.5946,\n  \"description\": \"Dead battery near mall\",\n  \"estimated_cost\": 35\n}" }
+      }
+    },
+    {
+      "name": "Get My Requests",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": { "raw": "{{baseUrl}}/secure-service-request", "host": ["{{baseUrl}}"], "path": ["secure-service-request"] }
+      }
+    },
+    {
+      "name": "Mechanic: Accept Job (RPC)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "url": { "raw": "{{baseUrl}}/secure-service-request?action=accept", "host": ["{{baseUrl}}"], "path": ["secure-service-request"], "query": [{ "key": "id", "value": "{{request_id}}" }] },
+        "body": { "mode": "raw", "raw": "{ \"status\": \"accepted\" }" }
+      }
+    },
+    {
+      "name": "Submit Rating (edge function)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "url": { "raw": "{{baseUrl}}/secure-service-request?id={{request_id}}", "host": ["{{baseUrl}}"], "path": ["secure-service-request"] },
+        "body": { "mode": "raw", "raw": "{ \"action\": \"rate\", \"rating\": 5, \"review\": \"Great service\" }" }
+      }
+    }
+  ]
+}

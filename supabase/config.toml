@@ -1,0 +1,22 @@
+project_id = "xspqodyttbwiagpcualr"
+
+[functions.allocate-mechanic]
+verify_jwt = false
+
+[functions.clerk-config]
+verify_jwt = false
+
+[functions.secure-profile]
+verify_jwt = false
+
+[functions.secure-customer-data]
+verify_jwt = false
+
+[functions.secure-mechanic-data]
+verify_jwt = false
+
+[functions.secure-vehicle-data]
+verify_jwt = false
+
+[functions.secure-service-request]
+verify_jwt = false
